@@ -14,6 +14,10 @@ import javafx.stage.Stage;
 import ru.javabegin.training.fastjava2.javafx.objects.Person;
 import ru.javabegin.training.fastjava2.javafx.utils.DialogManager;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,6 +47,8 @@ public class EditDialogController implements Initializable{
 
     private String imagePath="A:\\Java\\Education\\JavaBegin\\Java\\Lessons\\AddressBookFX_4\\src\\ru\\javabegin\\training\\fastjava2\\javafx\\images\\no_photo.png";
 
+    private  File file=new File(imagePath);
+
     private boolean saveClicked = false;// для определения нажатой кнопки
 
     @FXML
@@ -71,17 +77,14 @@ public class EditDialogController implements Initializable{
     }
 
 
-    public void actionSave(ActionEvent actionEvent) throws FileNotFoundException {
+    public void actionSave(ActionEvent actionEvent) throws IOException {
         if (!checkValues()){
             return;
         }
         person.setFio(txtFIO.getText());
         person.setPhone(txtPhone.getText());
         person.setEmail(txtEmail.getText());
-        File file= new File(imagePath);
-        BufferedInputStream inputStream=new BufferedInputStream(new FileInputStream(imagePath));
-
-        //person.setPhoto();
+        importImage(file);
         saveClicked = true;
         actionClose(actionEvent);
     }
@@ -108,11 +111,20 @@ public class EditDialogController implements Initializable{
         FileChooser chooser=new FileChooser();
         chooser.setTitle("Выберите фото контакта");
         String imagePath=chooser.showOpenDialog(((Node) mouseEvent.getSource()).getScene().getWindow()).getPath();
+        this.file=new File(imagePath);
         setImageView(imagePath);
     }
     public void setImageView(String imagePath) throws MalformedURLException {
         Image image=new Image(new File(imagePath).toURI().toURL().toString());
         imgPhoto.setImage(image);
+    }
+    public  void importImage(File file) throws IOException {
+        BufferedImage bufferedImage=ImageIO.read(file);
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage,"png",byteArrayOutputStream);
+        byte [] imageByte=byteArrayOutputStream.toByteArray();
+        person.setPhoto(imageByte);
+
     }
 
 }

@@ -9,7 +9,7 @@ public class Person {
     private SimpleStringProperty fio = new SimpleStringProperty("");
     private SimpleStringProperty phone = new SimpleStringProperty("");
     private String email= new String("");
-    private byte [] photo=null;
+    private byte [] photo=new byte[0];
 
 
     public Person() {
